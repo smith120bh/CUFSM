@@ -19,6 +19,9 @@ else
 Tflag;
     if Tflag==1
         stress=B*w/Cw;
+        if max(isnan(stress))
+            stress=0;
+        end
         node(:,8)=node(:,8)+stress;
     end
 end

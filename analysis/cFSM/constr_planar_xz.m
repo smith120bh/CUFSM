@@ -49,5 +49,4 @@ Kpc=[];
 %
 %to form the constraint matrix
 %[Rp]=-inv(Kpp)*Kpc;
-
 [Rp]=-Kpp\Kpc;

@@ -227,10 +227,8 @@ elseif strcmp(section,'open')
     end
     if abs(ys/sqrt(A)) < 1e-12
         ys = 0;
-	end
+    end
     
-	save('tmp_cutwp_initw.mat')
-	pause(0.1)
     % compute the unit warping
     for j = 1:nele
         i = 1;
@@ -249,8 +247,6 @@ elseif strcmp(section,'open')
         wno = wno+1/(2*A)*(wo(sn,2)+wo(fn,2))*t(i)* L(i); 
     end
     wn = wno-wo(:,2);
-	save('tmp_cutwp_endw.mat')
-	pause(0.1)
     
     % compute the warping constant
     for i = 1:nele

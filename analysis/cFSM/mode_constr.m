@@ -28,7 +28,7 @@ function [Rx,Rz,Rp,Ryd,Rys,Rud]=mode_constr(node,elem,prop,node_prop,m_node,m_el
 
 %to create Rx and Rz constraint matrices
 [Rx,Rz]=constr_xz_y(m_node,m_elem);
-
+%
 %to create Rp constraint matrix for the rest of planar DOFs
 [Rp]=constr_planar_xz(node,elem,prop,node_prop,DOFperm,m,a,BC);
 %

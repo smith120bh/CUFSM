@@ -36,6 +36,3 @@ end
 Rysm=eye(nmno);
 Rysm((nmno+1):nnode,1:nmno)=Rys;
 Ryd=Rysm'*A*Rysm;
-
-save('tmp_yd_yg.mat')
-pause(0.1)
