@@ -123,6 +123,10 @@ function []=cufsm5()
 %                   for release to end users.
 %version5.01 as of 26 Feb 2018
 %                   -Javascript bugs in boundcond cause crashses, fixed.
+%version 5.02 as of 5 April 2018
+%                   -Small bug fixes, reset went to cufsm4
+%version 5.03 as of 16 May 2019
+%                   -Fixed bug on discrete springs
 %-------------------------------------------------------------------------------------------------
 %
 %
@@ -164,6 +168,7 @@ if ispc %pc
     addpath([currentlocation,'\cutwp']);
     addpath([currentlocation,'\abaqusmaker']);
 else %mac! or unix
+    addpath([currentlocation]);
     addpath([currentlocation,'/analysis']);
     addpath([currentlocation,'/analysis/cFSM']);
     addpath([currentlocation,'/analysis/plastic']);
@@ -179,10 +184,11 @@ end
 %-----------------------------------------------------------------------------------
 %Title and menus
 %-----------------------------------------------------------------------------------
-version=['5.01'];
+version=['5.03'];
 name=['CUFSM v',version,' -- Constrained and Unconstrained Finite Strip Method (CUFSM) Buckling Analysis of Thin-Walled Members'];
 fig=figure('Name',name,...
    	'NumberTitle','off');
+fig.Visible='off';
 % set(fig,'Units','normalized')%
 set(fig,'MenuBar','none');
 %
@@ -199,7 +205,7 @@ set(fig,'MenuBar','none');
     % %set cufsmwindowsize
     % cufsmwindowsize=[1 1 min([pixelss(3);widthmax]) min([pixelss(4);heightmax])];
     % set(fig,'position',cufsmwindowsize);
-set(fig,'units','normalized','position',[0.01 0.01 0.98 0.85])
+set(fig,'units','normalized','position',[0.01 0.01 0.98 0.85]);
     %
 %set default font size
 set(0,'DefaultUicontrolFontSize',11);
@@ -216,8 +222,11 @@ set(0,'DefaultUicontrolFontSize',11);
 %-----------------------------------------------------------------------------------
 screen=0;
 commandbar;
+fig.Visible='on';
 %fire up the input page
 commandbar_cb(8);
+
+
 %
 %-------------------------------------------------------------------------------------
 %splash screen

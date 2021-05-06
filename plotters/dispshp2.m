@@ -151,25 +151,30 @@ for k=1:km
       if ifpatch==0
           %Plot the undeformed geometry
           if undef==1
-             plot3([xi xj],[(k-1)/(km-1)*L (k-1)/(km-1)*L],[zi zj],'k--','LineWidth',1,'erasemode','none')
+             %plot3([xi xj],[(k-1)/(km-1)*L (k-1)/(km-1)*L],[zi zj],'k--','LineWidth',1,'erasemode','none')
+             plot3([xi xj],[(k-1)/(km-1)*L (k-1)/(km-1)*L],[zi zj],'k--','LineWidth',1)
 %              if k==1 & i==1
 %                  axis off, axis equal, axis([xmin xmax ymin ymax zmin zmax]), view(37.5,30)
 %              end
              hold on
              if k<km
-                plot3([xi xi],[(k-1)/(km-1)*L (k)/(km-1)*L],[zi zi],'b','LineWidth',1,'erasemode','none')
-                plot3([xj xj],[(k-1)/(km-1)*L (k)/(km-1)*L],[zj zj],'b','LineWidth',1,'erasemode','none')
+                %plot3([xi xi],[(k-1)/(km-1)*L (k)/(km-1)*L],[zi zi],'b','LineWidth',1,'erasemode','none')
+                %plot3([xj xj],[(k-1)/(km-1)*L (k)/(km-1)*L],[zj zj],'b','LineWidth',1,'erasemode','none')
+                plot3([xi xi],[(k-1)/(km-1)*L (k)/(km-1)*L],[zi zi],'b','LineWidth',1)
+                plot3([xj xj],[(k-1)/(km-1)*L (k)/(km-1)*L],[zj zj],'b','LineWidth',1)
              end
           end
           %Now the deformed geometry
-          plot3(disp1m(1,:),ones(1,links+1)*(k-1)/(km-1)*L,disp1m(2,:),'r','LineWidth',1,'erasemode','none')
+          %plot3(disp1m(1,:),ones(1,links+1)*(k-1)/(km-1)*L,disp1m(2,:),'r','LineWidth',1,'erasemode','none')
+          plot3(disp1m(1,:),ones(1,links+1)*(k-1)/(km-1)*L,disp1m(2,:),'r','LineWidth',1)
 %              if k==1 & i==1
 %                  axis off, axis equal, axis([xmin xmax ymin ymax zmin zmax]), view(37.5,30)
 %              end
           hold on
           if k<km
              for mm=[1,length(disp1m(1,:))]
-                plot3([disp1m(1,mm),disp2m(1,mm)],[(k-1)/(km-1)*L (k)/(km-1)*L],[disp1m(2,mm),disp2m(2,mm)],'r','LineWidth',1,'erasemode','none')
+                %plot3([disp1m(1,mm),disp2m(1,mm)],[(k-1)/(km-1)*L (k)/(km-1)*L],[disp1m(2,mm),disp2m(2,mm)],'r','LineWidth',1,'erasemode','none')
+                plot3([disp1m(1,mm),disp2m(1,mm)],[(k-1)/(km-1)*L (k)/(km-1)*L],[disp1m(2,mm),disp2m(2,mm)],'r','LineWidth',1)
              end
           end
           %plot3(xs,ys,zs,'r','LineWidth',1,'erasemode','none')
@@ -183,7 +188,8 @@ for k=1:km
           if undef==1
               if k<km
                   for mm=1:1:length(disp1m(1,:))-1
-                      patch('vertices',[xi (k-1)/(km-1)*L zi;xj (k-1)/(km-1)*L zj; xj (k)/(km-1)*L zj; xi (k)/(km-1)*L zi],'faces',[1 4 3 2],'FaceColor','none','EdgeColor','b','erasemode','none');
+                      %patch('vertices',[xi (k-1)/(km-1)*L zi;xj (k-1)/(km-1)*L zj; xj (k)/(km-1)*L zj; xi (k)/(km-1)*L zi],'faces',[1 4 3 2],'FaceColor','none','EdgeColor','b','erasemode','none');
+                      patch('vertices',[xi (k-1)/(km-1)*L zi;xj (k-1)/(km-1)*L zj; xj (k)/(km-1)*L zj; xi (k)/(km-1)*L zi],'faces',[1 4 3 2],'FaceColor','none','EdgeColor','b');
 %                       if k==1 & i==1
 %                         axis off, axis equal, axis([xmin xmax ymin ymax zmin zmax]), view(37.5,30)
 %                       end
@@ -196,7 +202,8 @@ for k=1:km
       face=[];
           if k<km
               for mm=1:1:length(disp1m(1,:))-1
-                  patch('vertices',[disp1m(1,mm) (k-1)/(km-1)*L disp1m(2,mm);disp1m(1,mm+1) (k-1)/(km-1)*L disp1m(2,mm+1); disp2m(1,mm+1) (k)/(km-1)*L disp2m(2,mm+1); disp2m(1,mm) (k)/(km-1)*L disp2m(2,mm)],'faces',[1 4 3 2],'FaceColor','w','EdgeColor','r','erasemode','none');
+                  %patch('vertices',[disp1m(1,mm) (k-1)/(km-1)*L disp1m(2,mm);disp1m(1,mm+1) (k-1)/(km-1)*L disp1m(2,mm+1); disp2m(1,mm+1) (k)/(km-1)*L disp2m(2,mm+1); disp2m(1,mm) (k)/(km-1)*L disp2m(2,mm)],'faces',[1 4 3 2],'FaceColor','w','EdgeColor','r','erasemode','none');
+                  patch('vertices',[disp1m(1,mm) (k-1)/(km-1)*L disp1m(2,mm);disp1m(1,mm+1) (k-1)/(km-1)*L disp1m(2,mm+1); disp2m(1,mm+1) (k)/(km-1)*L disp2m(2,mm+1); disp2m(1,mm) (k)/(km-1)*L disp2m(2,mm)],'faces',[1 4 3 2],'FaceColor','w','EdgeColor','r');
                   %vertmm=[disp1m(1,mm) (k-1)/(km-1)*L disp1m(2,mm);disp1m(1,mm+1) (k-1)/(km-1)*L disp1m(2,mm+1); disp2m(1,mm+1) (k)/(km-1)*L disp2m(2,mm+1); disp2m(1,mm) (k)/(km-1)*L disp2m(2,mm)];
                   %facemm=[1 4 3 2];
 %                   if k==1 & i==1

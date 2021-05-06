@@ -5,6 +5,7 @@ function [M11,M22]=MxxtoM11(Mxx,Mzz,Ixx,Izz,Ixz,thetap,I11,I22,restrained)
 %the Mxx moment only creates moment about z, so M11 and M22 have to be
 %found so that this remains the case. In unrestrained bending M11 and M22
 %are simply the transformation.
+%May 2019 add isnan checks
 %
 %
 %initialize
@@ -38,4 +39,10 @@ if restrained
 else %unrestrained 
     M11=Gi11*Mxx+Gi12*Mzz;
     M22=Gi21*Mxx+Gi22*Mzz;
+end
+if isnan(M11)
+    M11=0;
+end
+if isnan(M22)
+    M22=0;
 end

@@ -247,9 +247,9 @@ if flags(10)==1, flags(10)=0;, else flags(10)=1;, end
 pre2_cb(3);
 case 20
     if strcmp(popanelpre.Visible,'off')
-        popanelpre.Visible = 'on'
+        popanelpre.Visible = 'on';
     else
-        popanelpre.Visible = 'off'
+        popanelpre.Visible = 'off';
     end 
 
 %
