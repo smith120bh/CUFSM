@@ -127,6 +127,9 @@ function []=cufsm5()
 %                   -Small bug fixes, reset went to cufsm4
 %version 5.03 as of 16 May 2019
 %                   -Fixed bug on discrete springs
+%version 5.04 as of 6 April 2020
+%                   -Debugging so version will compile on R2020a matlab and
+%                   on mac and windows..
 %-------------------------------------------------------------------------------------------------
 %
 %
@@ -155,7 +158,7 @@ global pathname filename pathnamecell filenamecell propcell nodecell elemcell le
 %path statements to functions and interface usful for organization in matlab, not useful in standalone version
 wpath=what;
 currentlocation=wpath.path;
-if ispc %pc
+if ispc & ~isdeployed %pc   %is deployed check added due to compiler not allowing addpath
     addpath([currentlocation]);
     addpath([currentlocation,'\analysis']);
     addpath([currentlocation,'\analysis\cFSM']);
@@ -167,7 +170,7 @@ if ispc %pc
     addpath([currentlocation,'\icons']);
     addpath([currentlocation,'\cutwp']);
     addpath([currentlocation,'\abaqusmaker']);
-else %mac! or unix
+elseif ~isdeployed %mac! or unix
     addpath([currentlocation]);
     addpath([currentlocation,'/analysis']);
     addpath([currentlocation,'/analysis/cFSM']);
@@ -184,7 +187,7 @@ end
 %-----------------------------------------------------------------------------------
 %Title and menus
 %-----------------------------------------------------------------------------------
-version=['5.03'];
+version=['5.04'];
 name=['CUFSM v',version,' -- Constrained and Unconstrained Finite Strip Method (CUFSM) Buckling Analysis of Thin-Walled Members'];
 fig=figure('Name',name,...
    	'NumberTitle','off');
