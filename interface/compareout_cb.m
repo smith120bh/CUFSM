@@ -635,56 +635,56 @@ set(filetoplot_title,'Enable','off');
 curveoption=2;
 compareout_cb(10)
 %-----------------------------------------------------------------------------------------
-% case 26
-% %Click on load-factor vs length plot to get the spot you want
-% pickpoint=get(axescurve,'CurrentPoint');
-% 
-% for j=1:max(size(curve));
-%     curve_sign(j,1)=curve{j}(modedisplay(1),1);
-%     curve_sign(j,2)=curve{j}(modedisplay(1),2);
-%     if length(modedisplay)>1
-%         for mn=2:length(modedisplay)
-%             templ(j,modedisplay(mn))=curve{j}(modedisplay(mn),1);
-%             templf(j,modedisplay(mn))=curve{j}(modedisplay(mn),2);
-%         end
-%     end
-% end
-% if length(modedisplay)>1
-%     [reldiff(1),pickminindex(1)]=min(sqrt((curve_sign(:,1)-pickpoint(1,1)).^2+(curve_sign(:,2)-pickpoint(1,2)).^2));
-%     for i=2:length(modedisplay)
-%         [reldiff(i),pickminindex(i)]=min(sqrt((templ(:,i)-pickpoint(1,1)).^2+(templf(:,i)-pickpoint(1,2)).^2));
-%     end
-%     [minreldiff,mindiffindex]=min(reldiff);
-%     modeindex=mindiffindex;
-%     lengthindex=pickminindex(modeindex);
-% else
-%     [reldiff,pickminindex]=min(sqrt((curve_sign(:,1)-pickpoint(1,1)).^2+(curve_sign(:,2)-pickpoint(1,2)).^2));
-%     lengthindex=pickminindex;
-%     % modeindex=1;
-% end
-% set(len_cur,'String',num2str(lengths(lengthindex)));
-% % set(len_cur,'String',['length = ',num2str(lengths(lengthindex))]);
-% modes=(1:1:length(curve{lengthindex}(:,2)));
-% set(mode_cur,'String',num2str(modes(modeindex)));
-% 
-% %automatically change the limits of x-y axis
-% if curveoption==2
-%     xmin=1;
-%     ymin=0;
-%     xmax=length(curve{lengthindex}(:,2));
-%     ymax=min([max(curve{lengthindex}(:,2)),3*median(curve{lengthindex}(:,2))]);
-%         set(xmin_tex,'String',num2str(xmin));
-%     set(xmax_tex,'String',num2str(xmax));
-%     set(ymin_tex,'String',num2str(ymin));
-%     set(ymax_tex,'String',num2str(ymax));
-% end
-% 
-% %plot the curve with a new picked point
-% compareout_cb(10);
-% %plot the mode shape
-% compareout_cb(1);
-% %--------------------------------------------------------------------------
-% %---------------
+case 26
+%Click on load-factor vs length plot to get the spot you want
+pickpoint=get(axescurve,'CurrentPoint');
+
+for j=1:max(size(curve));
+    curve_sign(j,1)=curve{j}(modedisplay(1),1);
+    curve_sign(j,2)=curve{j}(modedisplay(1),2);
+    if length(modedisplay)>1
+        for mn=2:length(modedisplay)
+            templ(j,modedisplay(mn))=curve{j}(modedisplay(mn),1);
+            templf(j,modedisplay(mn))=curve{j}(modedisplay(mn),2);
+        end
+    end
+end
+if length(modedisplay)>1
+    [reldiff(1),pickminindex(1)]=min(sqrt((curve_sign(:,1)-pickpoint(1,1)).^2+(curve_sign(:,2)-pickpoint(1,2)).^2));
+    for i=2:length(modedisplay)
+        [reldiff(i),pickminindex(i)]=min(sqrt((templ(:,i)-pickpoint(1,1)).^2+(templf(:,i)-pickpoint(1,2)).^2));
+    end
+    [minreldiff,mindiffindex]=min(reldiff);
+    modeindex=mindiffindex;
+    lengthindex=pickminindex(modeindex);
+else
+    [reldiff,pickminindex]=min(sqrt((curve_sign(:,1)-pickpoint(1,1)).^2+(curve_sign(:,2)-pickpoint(1,2)).^2));
+    lengthindex=pickminindex;
+    % modeindex=1;
+end
+set(len_cur,'String',num2str(lengths(lengthindex)));
+% set(len_cur,'String',['length = ',num2str(lengths(lengthindex))]);
+modes=(1:1:length(curve{lengthindex}(:,2)));
+set(mode_cur,'String',num2str(modes(modeindex)));
+
+%automatically change the limits of x-y axis
+if curveoption==2
+    xmin=1;
+    ymin=0;
+    xmax=length(curve{lengthindex}(:,2));
+    ymax=min([max(curve{lengthindex}(:,2)),3*median(curve{lengthindex}(:,2))]);
+        set(xmin_tex,'String',num2str(xmin));
+    set(xmax_tex,'String',num2str(xmax));
+    set(ymin_tex,'String',num2str(ymin));
+    set(ymax_tex,'String',num2str(ymax));
+end
+
+%plot the curve with a new picked point
+compareout_cb(10);
+%plot the mode shape
+compareout_cb(1);
+%--------------------------------------------------------------------------
+%---------------
 
 case 30
 %------------------------------------------------------------------------------------------

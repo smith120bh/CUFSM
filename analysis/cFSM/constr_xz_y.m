@@ -110,6 +110,6 @@ for i=1:nmno
         Rz(k,mnode1) = -cos2*r1/det;
         Rz(k,mnode2) = (cos1*r2+cos2*r1)/det;
         Rz(k,mnode3) = -cos1*r2/det;
-	end
+    end
 end
 %

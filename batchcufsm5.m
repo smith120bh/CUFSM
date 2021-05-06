@@ -1,13 +1,113 @@
-function [curve,curvecell,filenamecell,clascell,filedisplay,minopt,logopt,clasopt,axescurve,xmin,xmax,ymin,ymax,modedisplay,fileindex,modeindex,picpoint...
-    ,lengths,lengthindex,shapes,shapescell...
-    undef,node,elem,mode,axes2dshape,scale,springs,m_a,BC,SurfPos] = plotter_fun_batchcufsm4( curve,shapes,prop,node,elem,number,lengths,axes_handle,axes2dshape )
+%Batch code for CUFSM 5
+%Sometimes for parameter studies or other situations it is nice to use
+%CUFSM without the GUI. This example goes through most of the basic CUFSM
+%fucntions but shows how they can be programmed in matlab.
+%v3 Ben Schafer; v4 Zhanjie Li, March 2012; v5 Ben Schafer
+
+%clear the workspace (optional)
+clear all
+close all
+clc
+
+%location of cufsm m-files (subroutines)
+%(they are located where you unzipped them..)
+%note, there is difference of the format between mac/linux and windows
+%For mac or linux
+location=['/Users/bschafer/Dropbox (CEDJHU)/Ben/CUFSM/cufsm_working/cufsm5/source502']; %change this line to your own path
+addpath([location]);
+addpath([location,'/abaqusmaker']);
+addpath([location,'/analysis']);
+addpath([location,'/analysis/cFSM']);
+addpath([location,'/cutwp']);
+addpath([location,'/helpers']);
+addpath([location,'/holehelper']);
+addpath([location,'/interface']);
+addpath([location,'/plotters']);
+
+% %for windows, something like this         
+% location=['C:\zhanjieli\Documents\cufsm5\source502']; %change this line to your own path
+% addpath([location,'\abaqusmaker']);
+% addpath([location,'\analysis']);
+% addpath([location,'\analysis\cFSM']);
+% addpath([location,'\cutwp']);
+% addpath([location,'\helpers']);
+% addpath([location,'\holehelper']);
+% addpath([location,'\interface']);
+% addpath([location,'\plotters']);
+
+%-----------------------------------------------------------------
+%--------------------BASIC GEOMETRY DEFINITION--------------------
+%-----------------------------------------------------------------
+%Here we will just use the default section from CUFSM, but you could use
+%the template to define a section or anything you like, basically all the
+%screens in the CUFSM pre-processor are just variables that need to be
+%defined.
+%
+
+%Material Properties
+prop=[100 29500.00 29500.00 0.30 0.30 11346.15];
+%
+%Nodes
+node=[1 5.00 1.00 1 1 1 1 33.33
+    2 5.00 0.00 1 1 1 1 50.00
+    3 2.50 0.00 1 1 1 1 50.00
+    4 0.00 0.00 1 1 1 1 50.00
+    5 0.00 3.00 1 1 1 1 16.67
+    6 0.00 6.00 1 1 1 1 -16.67
+    7 0.00 9.00 1 1 1 1 -50.00
+    8 2.50 9.00 1 1 1 1 -50.00
+    9 5.00 9.00 1 1 1 1 -50.00
+    10 5.00 8.00 1 1 1 1 -33.33];
+%
+%Elements
+elem=[1 1 2 0.100000 100
+    2 2 3 0.100000 100
+    3 3 4 0.100000 100
+    4 4 5 0.100000 100
+    5 5 6 0.100000 100
+    6 6 7 0.100000 100
+    7 7 8 0.100000 100
+    8 8 9 0.100000 100
+    9 9 10 0.100000 100];
+
+%-----------------------------------------------------------------
+%------------TWEAKING MODEL USING OTHER CUFSM FEATURES------------
+%-----------------------------------------------------------------
+%Features available in the GUI may also be used in these batch programs,
+%for instance the mesh in this default file is rather course, let's double
+%the number of elements
+[node,elem]=doubler(node,elem);
+%
+%In this example the stresses (last column of nodes) are already defined,
+%but it is common to use the properties page to define these values instead
+%of entering in the nodal stresses. Right now this problem applies a
+%reference bending moment, let's apply a reference compressive load using
+%the subroutines normally used on the properties page of CUFSM
+%
+%first calculate the global properties
+[A,xcg,zcg,Ixx,Izz,Ixz,thetap,I11,I22,J,Xs,Ys,Cw,B1,B2,w] = cutwp_prop2(node(:,2:3),elem(:,2:4));
+thetap=thetap*180/pi; %degrees...
+Bx=NaN; By=NaN;
+%
+%second set the refernce stress
+fy=50;
+%
+%third calculate the P and M associated with the reference stress
+unsymmetric=0; %i.e. do a restrained bending calculation
+[P,Mxx,Mzz,M11,M22]=yieldMP(node,fy,A,xcg,zcg,Ixx,Izz,Ixz,thetap,I11,I22,unsymmetric);
+%
+%fourth apply just the P to the model
+node=stresgen(node,P*1,Mxx*0,Mzz*0,M11*0,M22*0,A,xcg,zcg,Ixx,Izz,Ixz,thetap,I11,I22,unsymmetric);
+%
+
 %-----------------------------------------------------------------
 %----------------additional input definitions---------------------
 %-----------------------------------------------------------------
 
 %Lengths:
 %for signiture curve, the length is interpreted as half-wave length the same as older cufsm version (3.x and previous)
-% lengths=linspace(large_piece/20,large_piece+small_piece/2,20);
+%lengths=[1.0 2.0 3.0 4.0 5.0 6.0 7.0 8.0 9.0 10.0 11.0 12.0 13.0 14.0 15.0 20.0 30.0 40.0 50.0 60.0 70.0 80.0 90.0 100.0 200.0 300.0 400.0 500.0 600.0 700.0 800.0 900.0 1000.0 ];
+lengths=logspace(0,3,100)';
 % %for general boundary conditions, the length is interpreted as physical member length
 % lengths=[92 192];
 
@@ -59,11 +159,7 @@ neigs=10; %GUI default is 20
 nnodes = length(node(:,1));
 ndof_m= 4*nnodes;
 GBTcon.ospace=1;GBTcon.couple=1;GBTcon.orth=2;GBTcon.norm=1; %see strip for possible solutions
-
-node
-elem
 [elprop,m_node,m_elem,node_prop,nmno,ncno,nsno,ndm,nlm,DOFperm]=base_properties(node,elem);
-
 ngm=4;nom=2*(length(node(:,1))-1);
 GBTcon.local=zeros(1,nlm);
 GBTcon.dist=zeros(1,ndm);
@@ -78,7 +174,7 @@ GBTcon.other=zeros(1,nom);
 %---------------RUN THE ANALYSIS----------------------------------
 %-----------------------------------------------------------------
 %
-% [curve,shapes]=strip(prop,node,elem,lengths,springs,constraints,GBTcon,BC,m_all,neigs);
+[curve,shapes]=strip(prop,node,elem,lengths,springs,constraints,GBTcon,BC,m_all,neigs);
 %
 
 %-----------------------------------------------------------------
@@ -98,8 +194,7 @@ clas=0;
 
 
 %for example you could save the filename and look at the results in the GUI
-fname=['batchcufsm4results' num2str(number)];
-save (fname);
+save batchcufsm5results
 
 %Hopefully it is obvious that all of the above could be put in a loop. One
 %of the dimensions could be a variable and then all of the preceding steps
@@ -131,152 +226,46 @@ save (fname);
 %same
 %shapes = mode shapes for each length
 %shapes{l} = mode, mode is a matrix, each column corresponds to a mode.
-
-%Figure 1 lets plot the usual buckling curve
-% figure
-% axes(axes_handle)
-% 
-% cla
-% axescurve=axes('Units','normalized','Position',[0.1 0.1 0.8 0.8],'Box','on','XTickLabel','','YTickLabel','');
-axescurve=axes_handle;
-%set(axescurve,'FontName','times','FontSize',14) %comented out by BWS
-% figure
-% axes2dshape=axes('Units','normalized','Position',[0.1 0.1 0.8 0.8],'visible','off');
-
-
-%Set default initial values
-i=1;
-filenamecell{i}=['CUFSM results'];
-propcell{i}=prop;
-nodecell{i}=node;
-elemcell{i}=elem;
-lengthscell{i}=lengths;
-curvecell{i}=curve;
-shapescell{i}=shapes;
-assignin('base','shapesl',shapes);
-clascell{i}=clas;
-springscell{i}=springs;
-constraintscell{i}=constraints;
-GBTconcell{i}=GBTcon;
-BCcell{i}=BC;
-m_allcell{i}=m_all;
-%whether the solution is a signature curve solution or general boundary
-%condition solution
-for j=1:max(size(m_all))
-    if length(m_all{j})==1&m_all{j}==m_all{1}
-        solutiontype=1;
-    else
-        solutiontype=2;
-        break
-    end
-end
-solutiontypecell{i}=solutiontype;
-
-fileindex=1;
-lengthindex=1;
+%
+%%
+%Buckling halfwavelenth plot from a signature analysis
+%inputs required for the general plotter from the GUI
+curvecell{1}=curve; %GUI expects to get a cell...,
+filenamecell{1}=['Batch CUFSM5'];
+clascell{1}=clas;
+filedisplay=1;
+minopt=1; %show min
+logopt=1; %semilogx
+clasopt=0; %classification stuff off
+axescurve=figure(1);
+xmin=min(lengths)*10/11;
+xmax=max(lengths)*11/10;
 modeindex=1;
-clasopt=0;
-logopt=1;
-minopt=1;
-files=1;
-modes=(1:1:length(curve{lengthindex}(:,2)));
-modedisplay=1;
-filedisplay=files;
-
-%Plot the buckling curve as a start
-curveoption=1; %plot the buckling curve vs length
-if length(lengths)==1
-    curveoption=2;%plot the buckling curve vs mode#
-end
-%set the xmax, ymax
-if curveoption==1
-    xmin=min(lengths)*10/11;
-    ymin=0;
-    xmax=max(lengths)*11/10;
+ymin=0;
     for j=1:max(size(curve));
         curve_sign(j,1)=curve{j}(modeindex,1);
         curve_sign(j,2)=curve{j}(modeindex,2);
     end
-    ymax=min([max(curve_sign(:,2)),3*median(curve_sign(:,2))]);
-    cr=0;
-     for m=1:length(curve_sign(:,1))-2
-            load1=curve_sign(m,2);
-            load2=curve_sign(m+1,2);
-            load3=curve_sign(m+2,2);
-            if (load2<load1)&(load2<=load3)
-                cr=cr+1;
-                hold on
-                lengthindex=m+1;
-            end
-     end
-   
-    %plot the buckling curve vs length
-    picpoint=[curve{lengthindex}(modeindex,1) curve{lengthindex}(modeindex,2)];
-%    
-    thecurve3_hole(curvecell,filenamecell,clascell,filedisplay,minopt,logopt,clasopt, axescurve,xmin,xmax,ymin,ymax,modedisplay,fileindex,modeindex,picpoint)
-    
-elseif curveoption==2
-    
-%     figure(11)
-%     axescurvemode=axes('Units','normalized','Position',[0.1 0.1 0.8 0.8],'Box','on','XTickLabel','','YTickLabel','');
-%     set(axescurvemode,'FontName','times','FontSize',14)
-    xmin=1;
-    ymin=0;
-    xmax=length(curve{lengthindex}(:,2));
-    ymax=min([max(curve{lengthindex}(:,2)),3*median(curve{lengthindex}(:,2))]);
-    %plot the buckling load vs mode#
-    picpoint=[modes(modeindex) curve{lengthindex}(modeindex,2)];
-%     thecurve3_holemode(curvecell,filenamecell,clascell,fileindex,minopt,logopt,clasopt,axescurvemode,xmin,xmax,ymin,ymax,fileindex,lengthindex,picpoint);
-   
-    %plot longitudinal term participation for modeindex
-%     figure(12)
-%     set(gca,'FontName','times','FontSize',14)
-%     
-%     mode=shapes{lengthindex}(:,modeindex);
-%     nnodes=length(node(:,1));
-%     m_a=m_all{lengthindex};
-%     [d_part]=longtermpart(nnodes,mode,m_a);
-%     bar(m_a,d_part);hold on
-%     xlabel('m, longitudinal term');hold on;
-%     ylabel('Participation');hold on;
-%     legendstring=[filenamecell{fileindex},', length = ',num2str(lengths(lengthindex)), ', mode = ', num2str(modeindex)];
-%         hlegend=legend(legendstring);hold on
-%     set(hlegend,'Location','best');
-%     hold off  
-end
+ymax=min([max(curve_sign(:,2)),3*median(curve_sign(:,2))]);
+modedisplay=1;
+fileindex=1;
+lengthindex=20;
+picpoint=[curve{lengthindex}(modeindex,1) curve{lengthindex}(modeindex,2)];
+%call the plotter
+thecurve3(curvecell,filenamecell,clascell,filedisplay,minopt,logopt,clasopt,axescurve,xmin,xmax,ymin,ymax,modedisplay,fileindex,modeindex,picpoint)
 
-hold on
-ylim=get(gca,'Ylim');
-% plot([large_piece large_piece],ylim,'color','r');
-
-%plot buckling mode shape
-% change this to plot buckling mode shape at specified length and specified
-% mode
-% lengthindex=1;
-modeindex=1;
-
-%additional initial input
-threed=0;%whether plot 3d mode shape
-undef=1;
-scale=-1;
-SurfPos=1/2;
-curveoption=1;
-ifcheck3d=0;
-ifpatch=0;
-m_a=m_all{lengthindex};
-
-%
-
-%Plot the first mode shape as a start
+%%
+%2D buckled shape at a selected index into lengths
+%inputs required for buckled shape in 2D
+undef=1; %plot undeformed
+%node
+%elem
 mode=shapes{lengthindex}(:,modeindex);
-dispshap(undef,node,elem,mode,axes2dshape,scale,springs,m_a,BC,SurfPos);
-if threed==1
-%     figure(3)
-%     axes3dshape=axes('Units','normalized','Position',[0.1 0.1 0.8 0.8],'visible','off');
-  cla axes3dshape
-dispshp2(undef,lengths(lengthindex),node,elem,mode,axes3dshape,scale,m_a,BC,ifpatch);
-end
-
-
-end
-
+axes2dshapelarge=figure(2);
+scale=1;
+%springs
+m_a=1;
+%BC
+SurfPos=1/2;
+dispshap(undef,node,elem,mode,axes2dshapelarge,scale,springs,m_a,BC,SurfPos);
+title(['Length=',num2str(lengths(lengthindex)),' LF=',num2str(curve{lengthindex}(1,2))]);

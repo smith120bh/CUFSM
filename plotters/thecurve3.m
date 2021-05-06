@@ -1,4 +1,4 @@
-function [curve_sign]=thecurve3(curvecell,filenamecell,clascell,filedisplay,minopt,logopt,clasopt,axesnum,xmin,xmax,ymin,ymax,modedisplay,fileindex,modeindex,picpoint)
+function []=thecurve3(curvecell,filenamecell,clascell,filedisplay,minopt,logopt,clasopt,axesnum,xmin,xmax,ymin,ymax,modedisplay,fileindex,modeindex,picpoint)
 %BWS
 %August 2000
 %modified May 2004 to accomodate modal classification plotting as well

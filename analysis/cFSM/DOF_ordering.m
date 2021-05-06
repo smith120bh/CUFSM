@@ -105,4 +105,3 @@ for i=1:nno
         DOFperm((2*nno+2*i),(4*nmno+2*nsno+is))=1;
     end
 end
-

@@ -141,10 +141,9 @@ while l<nlengths
         %Transform k and kg into global coordinates
         alpha=elprop(i,3);
         [k,kg]=trans(alpha,k_l,kg_l,m_a);
-		%Add element contribution of k to full matrix K and kg to Kg
+        %Add element contribution of k to full matrix K and kg to Kg
         nodei=elem(i,2);
         nodej=elem(i,3);
-		
         [K,Kg]=assemble(K,Kg,k,kg,nodei,nodej,nnodes,m_a);
         %WAITBAR MESSAGE for assmebly
         if length(m_a)*length(node(:,1))>=120
@@ -172,7 +171,7 @@ while l<nlengths
             kw=springs(i,6);
             kq=springs(i,7);
             discrete=springs(i,9);
-            ys=springs(i,10);
+            ys=springs(i,10)*a;
             [ks_l]=spring_klocal(ku,kv,kw,kq,a,BC,m_a,discrete,ys);
             %Transform ks into global coordinates
             nodei = springs(i,2);
@@ -255,7 +254,7 @@ while l<nlengths
     %INTRODUDCE CONSTRAINTS AND REDUCE K MATRICES TO FREE PARTS ONLY
     Kff=R'*K*R;
     Kgff=R'*Kg*R;
-	
+    
     %SOLVE THE EIGENVALUE PROBLEM
     %Determine which solver to use
     %small problems usually use eig, and large problems use eigs.
