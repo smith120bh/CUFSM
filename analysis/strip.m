@@ -171,7 +171,7 @@ while l<nlengths
             kw=springs(i,6);
             kq=springs(i,7);
             discrete=springs(i,9);
-            ys=springs(i,10);
+            ys=springs(i,10)*a;
             [ks_l]=spring_klocal(ku,kv,kw,kq,a,BC,m_a,discrete,ys);
             %Transform ks into global coordinates
             nodei = springs(i,2);

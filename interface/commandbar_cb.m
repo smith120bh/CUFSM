@@ -87,7 +87,7 @@ switch question
         PBC=[];
         Pm_all=[];
         neigs=[];
-        cufsm4;
+        cufsm5;
 end
 
 %-------------------------------------------------------------------
@@ -182,7 +182,7 @@ else
             msgbox('The file you attempted to load does not have data for constrained Finite Strip Method (cFSM), Use Load, or Input, after setting the bound. cond., then cFSM','Data unavailable','warn')
             waitforbuttonpress
             closereq
-            cufsm4
+            cufsm5
         end
     end
     %
@@ -193,7 +193,7 @@ else
             msgbox('The file you attempted to load does not have data for post-processing available. Use Load or Analyze, then Post, CUFSM resetting','Data unavailable','warn')
             waitforbuttonpress
             closereq
-            cufsm4
+            cufsm5
         end
     end
     %
