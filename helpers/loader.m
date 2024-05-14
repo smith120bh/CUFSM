@@ -31,28 +31,30 @@ else
 
 	load([pathname,filename]);
     
-    if length(springs(1,:))<10&&springs(1,1)~=0 %then this is the old springs and needs to be written to the new structure
-        uiwait(msgbox('Springs from version 4.2 or earlier detected, will be converted.'));
-        oldsprings=springs;
-        springs=[];
-        for i=1:length(oldsprings(:,1))
-            springnum=i;
-            nodei=oldsprings(i,1);
-            nodej=0;
-            dof=oldsprings(i,2);
-            kspring=oldsprings(i,3);
-            kflag=oldsprings(i,4);
-            if kflag==0
-                uiwait(msgbox('Spring detected with k_{flag}=0, i.e. total stiffness spring, all foundation springs are now per unit length, manual conversion of spring stiffness may be needed to achieve intended results.'));
+    if ~isempty(springs)
+        if length(springs(1,:))<10&&springs(1,1)~=0 %then this is the old springs and needs to be written to the new structure
+            uiwait(msgbox('Springs from version 4.2 or earlier detected, will be converted.'));
+            oldsprings=springs;
+            springs=[];
+            for i=1:length(oldsprings(:,1))
+                springnum=i;
+                nodei=oldsprings(i,1);
+                nodej=0;
+                dof=oldsprings(i,2);
+                kspring=oldsprings(i,3);
+                kflag=oldsprings(i,4);
+                if kflag==0
+                    uiwait(msgbox('Spring detected with k_{flag}=0, i.e. total stiffness spring, all foundation springs are now per unit length, manual conversion of spring stiffness may be needed to achieve intended results.'));
+                end
+                ku=(dof==1)*kspring;
+                kv=(dof==2)*kspring;
+                kw=(dof==3)*kspring;
+                kq=(dof==4)*kspring;
+                local=0;
+                discrete=0;
+                yonL=0;
+                springs(i,:)=[springnum nodei nodej ku kv kw kq local discrete yonL];
             end
-            ku=(dof==1)*kspring;
-            kv=(dof==2)*kspring;
-            kw=(dof==3)*kspring;
-            kq=(dof==4)*kspring;
-            local=0;
-            discrete=0;
-            yonL=0;
-            springs(i,:)=[springnum nodei nodej ku kv kw kq local discrete yonL];
         end
     end
         

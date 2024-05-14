@@ -217,7 +217,7 @@ else
     hold off    
 end
 
-%GUI CONTROLS FOLLOW
+%%GUI CONTROLS FOLLOW
 %-------------------
 %
 box1=uicontrol(fig,...
@@ -730,3 +730,5 @@ btn_cfsmhelp=uicontrol(fig,...
     'String','?',...
     'Callback',[...
     'cufsmhelp(22);']);
+
+

@@ -11,7 +11,7 @@ function []=dispshp2(undef,L,node,elem,mode,axesnum,scalem,m_a,BC,ifpatch)
 wait_message=waitbar(0,'slower for long length or many longitudinal terms','Name','Plotting the 3D shape.' );
 
 % set(wait_message,'WindowStyle','modal')
-watchon;
+%watchon;
 %
 %
 %
@@ -228,4 +228,4 @@ end
 axis equal
 view(37.5,30)
 hold off
-watchoff
+%watchoff
