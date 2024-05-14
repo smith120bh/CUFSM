@@ -566,14 +566,16 @@ if ~isempty(curve)&~isempty(shapes)%&curve{1}(1,1)~=0&shapes{1}(1,1)~=0
             %question2=questdlg('Select a solver for the analysis. The Alternate solver is good for bigger problems, but is less accurate than the Robust solver. If resulting buckling curve is not smooth try the Robust solver.','Choose a Solver','Alternate Solver','Robust Solver','Cancel');
             %switch question2, case 'Alternate Solver',watchon;,[curve,shapes]=strip(prop,node,elem,lengths,2,springs,constraints);,watchoff;
             %                  case 'Robust Solver',watchon;,[curve,shapes]=strip(prop,node,elem,lengths,1,springs,constraints);,watchoff;,end,
-            watchon;,[curve,shapes]=strip(prop,node,elem,lengths,springs,constraints,GBTcon,BC,m_all,neigs);,watchoff;
+            %watchon;,[curve,shapes]=stripmain(prop,node,elem,lengths,springs,constraints,GBTcon,BC,m_all,neigs);,watchoff;
+            [curve,shapes]=stripmain(prop,node,elem,lengths,springs,constraints,GBTcon,BC,m_all,neigs);
             compareout(1);
     end
 elseif ~isempty(prop)&~isempty(node)&~isempty(elem)&~isempty(lengths)&~isempty(BC)&~isempty(m_all)
     %question2=questdlg('Select a solver for the analysis. The Alternate solver is good for bigger problems, but is less accurate than the Robust solver. If resulting buckling curve is not smooth try the Robust solver.','Choose a Solver','Alternate Solver','Robust Solver','Cancel');
     %switch question2, case 'Alternate Solver',watchon;,[curve,shapes]=strip(prop,node,elem,lengths,2,springs,constraints);,watchoff;
     %				   case 'Robust Solver',watchon;,[curve,shapes]=strip(prop,node,elem,lengths,1,springs,constraints);,watchoff;,end,
-    watchon;,[curve,shapes]=strip(prop,node,elem,lengths,springs,constraints,GBTcon,BC,m_all,neigs);,watchoff;
+    %watchon;,[curve,shapes]=stripmain(prop,node,elem,lengths,springs,constraints,GBTcon,BC,m_all,neigs);,watchoff;
+    [curve,shapes]=stripmain(prop,node,elem,lengths,springs,constraints,GBTcon,BC,m_all,neigs);
     compareout(1);
 else
     if screen==2
@@ -715,15 +717,15 @@ holehelper;
 %-------------------------------------------------
 case 31
 %import MASTAN forces
-loading;
-loading_cb(300);
+%loading;
+%loading_cb(300);
 %-----------------------------------------------
 
 %-------------------------------------------------
 case 32
 %Export section to MASTAN
-propout;
-propout_cb(100);
+%propout;
+%propout_cb(100);
 %-----------------------------------------------
 
 %-------------------------------------------------
@@ -737,11 +739,14 @@ if isempty(lengths)
     lengths(1)=1;
 end
 %save key variable to temp file in cutwp directory
-if ispc %pc
-    save([currentlocation,'\cutwp\fromcufsm'],'prop','node','elem','lengths');
-else %mac! or unix
-    save([currentlocation,'/cutwp/fromcufsm'],'prop','node','elem','lengths');
-end
+%use global variables instead..
+    % if ispc %pc
+    %     %save([currentlocation,'\cutwp\fromcufsm'],'prop','node','elem','lengths');
+    %     save(['fromcufsm'],'prop','node','elem','lengths');
+    % else %mac! or unix
+    %     %save([currentlocation,'/cutwp/fromcufsm'],'prop','node','elem','lengths');
+    %     save(['fromcufsm'],'prop','node','elem','lengths');
+    % end
 cutwp;
 cutwp('FromCUFSM');
 %-----------------------------------------------
@@ -749,24 +754,27 @@ cutwp('FromCUFSM');
 %-------------------------------------------------
 case 34
 %Fire up Abaqusmaker
-if screen==0
-    pre2;
-end
-%if lengths empty (since it is done in a separate step)
-if isempty(lengths)
-    lengths(1)=1;
-end
-if isempty(curve)
-    curve=[1 1];
-end
-%save key variable to temp file in cutwp directory
-if ispc %pc
-    save([currentlocation,'\abaqusmaker\abaqus_me_subs\fromcufsm'],'prop','node','elem','lengths','curve','shapes');
-else %mac! or unix
-    save([currentlocation,'/abaqusmaker/abaqus_me_subs/fromcufsm'],'prop','node','elem','lengths','curve','shapes');
-end
-abaqus_me;
-cufsmhelp(500)
+% if screen==0
+%     pre2;
+% end
+% %if lengths empty (since it is done in a separate step)
+% if isempty(lengths)
+%     lengths(1)=1;
+% end
+% if isempty(curve)
+%     curve=[1 1];
+% end
+% %save key variable to temp file in cutwp directory
+% %using globals instead...
+%     % if ispc %pc
+%     %     %save([currentlocation,'\abaqusmaker\abaqus_me_subs\fromcufsm'],'prop','node','elem','lengths','curve','shapes');
+%     %     save([currentlocation,'\fromcufsm'],'prop','node','elem','lengths','curve','shapes');
+%     % else %mac! or unix
+%     %     %save([currentlocation,'/abaqusmaker/abaqus_me_subs/fromcufsm'],'prop','node','elem','lengths','curve','shapes');
+%     %     save([currentlocation,'/fromcufsm'],'prop','node','elem','lengths','curve','shapes');
+%     % end
+% abaqus_me;
+% cufsmhelp(500)
 %-----------------------------------------------
 
 case 51

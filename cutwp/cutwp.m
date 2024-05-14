@@ -780,7 +780,8 @@ elseif strcmp(command_str,'Open')
 elseif strcmp(command_str,'FromCUFSM')
     %modified Open code to handle data coming from CUFSM 
     file=['fromcufsm'];
-    load(file);
+    %load(file);
+    global prop node elem lengths %call from the global variable space
     coord=node(:,2:3);
     ends=elem(:,2:4);
     KL1=lengths(1);

@@ -130,6 +130,27 @@ function []=cufsm5()
 %version 5.04 as of 6 April 2020
 %                   -Debugging so version will compile on R2020a matlab and
 %                   on mac and windows..
+%version 5.04+ as of 8 July 2021
+%                    -Fixed bug on plastic surface gridding, when thetap is
+%                    nonzero, in plasticbuild_cb line 94 changed thetap to
+%                    degrees to fix the error.
+%version 5.04+ as of 7 July 2023
+%                    -Fixed eigs call in strip which throws an error in
+%                    R2022.
+%version 5.05 as of 28 Dec 2023
+%                    -Cleanups for R2023b
+%                    -Criticall strip.m renamed to stripmain.m because
+%                    strip has become reserved word - source of lots of
+%                    user problems
+%                    -Also removed analysis waitbar from analysis button,
+%                    seemed to cause more problems and hung windows,
+%                    possibly related to strip.m issue but removed.
+%                    -Buggy code, with limited valued removed: holehelper,
+%                    abaqus_me, and mastan in/out. Will separate into their
+%                    own tools, or bring back in future version
+%                    -changed cutwp to use global variables instead of load
+%                    and save, this should now work in compiled versions
+%                    bringing back this functionality to those users
 %-------------------------------------------------------------------------------------------------
 %
 %
@@ -164,30 +185,30 @@ if ispc & ~isdeployed %pc   %is deployed check added due to compiler not allowin
     addpath([currentlocation,'\analysis\cFSM']);
     addpath([currentlocation,'\analysis\plastic']);
     addpath([currentlocation,'\helpers']);
-    addpath([currentlocation,'\holehelper']);
+    %addpath([currentlocation,'\holehelper']);
     addpath([currentlocation,'\interface']);
     addpath([currentlocation,'\plotters']);
     addpath([currentlocation,'\icons']);
     addpath([currentlocation,'\cutwp']);
-    addpath([currentlocation,'\abaqusmaker']);
+    %addpath([currentlocation,'\abaqusmaker']);
 elseif ~isdeployed %mac! or unix
     addpath([currentlocation]);
     addpath([currentlocation,'/analysis']);
     addpath([currentlocation,'/analysis/cFSM']);
     addpath([currentlocation,'/analysis/plastic']);
-    addpath([currentlocation,'/holehelper']);
+    %addpath([currentlocation,'/holehelper']);
     addpath([currentlocation,'/helpers']);
     addpath([currentlocation,'/interface']);
     addpath([currentlocation,'/plotters']);
     addpath([currentlocation,'/icons']);
     addpath([currentlocation,'/cutwp']);
-    addpath([currentlocation,'/abaqusmaker']);
+    %addpath([currentlocation,'/abaqusmaker']);
 end
 
 %-----------------------------------------------------------------------------------
 %Title and menus
 %-----------------------------------------------------------------------------------
-version=['5.04'];
+version=['5.05'];
 name=['CUFSM v',version,' -- Constrained and Unconstrained Finite Strip Method (CUFSM) Buckling Analysis of Thin-Walled Members'];
 fig=figure('Name',name,...
    	'NumberTitle','off');

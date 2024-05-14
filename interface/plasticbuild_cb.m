@@ -91,7 +91,7 @@ switch num
     Deg=str2num(get(degreesedit,'String'));
     nfiber=ones(length(elem(:,1)),1)*nfib;
     fib = fiber4elem(node,elem,nfiber);   
-    [M11pr,M22pr,Ppr]=PMM_Plastic(fib,node,fy,A,xcg,zcg,Ixx,Izz,Ixz,thetap,I11,I22,unsymm,Ne,Deg);
+    [M11pr,M22pr,Ppr]=PMM_Plastic(fib,node,fy,A,xcg,zcg,Ixx,Izz,Ixz,thetap*180/pi,I11,I22,unsymm,Ne,Deg); %July 2021 thetap angle changed to degress in input to PMM_plastic
     %plot the results
     rawpts=1;, gridit=0; gridedge=0; gridpts=0;
     set(rawpointsui,'Value',rawpts);
@@ -144,7 +144,7 @@ switch num
     unsymm=1;
     %calculate new values for yield moments
     [A,xcg,zcg,Ixx,Izz,Ixz,thetap,I11,I22,J,Xs,Ys,Cw,B1,B2,w] = cutwp_prop2(node(:,2:3),elem(:,2:4));
-    [Py,Mxxy,Mzzy,M11y,M22y]=yieldMP(node,fy,A,xcg,zcg,Ixx,Izz,Ixz,thetap,I11,I22,unsymm);
+    [Py,Mxxy,Mzzy,M11y,M22y]=yieldMP(node,fy,A,xcg,zcg,Ixx,Izz,Ixz,thetap*180/pi,I11,I22,unsymm);
     M11panchor=M11ponM11y*M11y;
     M22panchor=M22ponM22y*M22y;
     Ppanchor=Py;
